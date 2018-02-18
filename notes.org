@@ -82,7 +82,6 @@ std::array<int, 8> eight_ints;  // fixed size array on stack
 // in C# that would be  int[] x = new int[8];  though note it's on heap
 int eight_ints[8]; // way to create fixed size arrays on stack
 std::vector<int> eight_ints(8); // resizable array
-
 #+END_SRC cpp
 * Lets program Hangman
 - Looks a lot like how you would do it in C#!
@@ -161,6 +160,42 @@ vector inner = light_direction.get();
 #+END_SRC 
 - Bit different than C#
 - No ~new~ keyword used.  ~new~ keyword does exist, but is not commonly used in Modern C++
+* Headers
+-  In C++, functions, and constructors and only be used after declaration
+#+BEGIN_SRC cpp
+int get_money(std::string name) {
+  int interest = get_interest_rate();
+  return 4;
+}
+int get_interest_rate() {
+}
+#+END_SRC
+- The above won't compile, as ~money~ is used before declaration
+- Because ~get_interest_rate~ is used before declaration
+- Maybe ~get_interest_rate~ is even defined in another file
+
+* Headers
+- Instead, we can declare the existence of some function, separately from giving it's full definition
+- Usually at the beginning of the file...
+#+BEGIN_SRC cpp
+
+int get_interest_rate(); // defined later in this file
+int get_taxation(); // defined in taxation.cpp
+
+int get_money(std::string name) {
+  int interest = get_interest_rate();
+  int taxation = get_taxatation();
+  return 4;
+}
+int get_interest_rate() {
+}
+#+END_SRC
+
+* Headers
+-  Instead of starting each ~.cpp~ file with a list of all functions it can use
+-  We put the list of functions in a ~.h~ or ~.hpp~ file and use the ~#include~ directive
+-  ~#include~ simply copies the content of the ~.hpp~ file and literally pastes it into your ~.cpp~ file
+- Now we only have to declare what functions exist once, and then not worry about definition order... 
 * Resources in C#
 - In C#, memory is managed through a nondeterministic garbage collector.
 - In C#, other resources such as file handles must be cleaned up explicitly.
