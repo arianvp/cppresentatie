@@ -29,7 +29,7 @@ int main() {
 4. Print reversed line.
  
 * C-style language
-We have all the things you would expect. Looks like C#.
+- We have all the things you would expect. Looks like C#.
 - Loops
 - If statements
 - Switch statement
@@ -38,8 +38,8 @@ We have all the things you would expect. Looks like C#.
 - Classes
 
 * Types and variables
-Variables are declared and initialized using type and name. They can
-be assigned to with ~=~ just like in C#.
+- Variables are declared and initialized using type and name. They can
+  be assigned to with ~=~ just like in C#.
 
 #+BEGIN_SRC c++
 int age = 20;                   // whole number
@@ -55,10 +55,10 @@ numbers[0] = 1.0;
 health[name] = 133.3;
 #+END_SRC
 
-Note: ~std::string~ is a safer, faster, more modern alternative to ~char*~.
+- Note: ~std::string~ is a safer, more modern alternative to ~char*~.
 
 * Lets program hangman
-Looks a lot like how you would do it in C#!
+- Looks a lot like how you would do it in C#!
 
 #+BEGIN_SRC c++
 std::string word("Borrel");
@@ -79,7 +79,8 @@ while (true) {
 #+END_SRC
 
 * Function definitions and calls
-Looks a lot like C#. For example:
+- Function definitions are much like in C#.
+- Function call syntax is also the same.
 
 #+BEGIN_SRC c++
 int gcd(int a, int b) {
@@ -97,7 +98,8 @@ int gcd(int a, int b) {
 - They mean the same thing, except ~struct~ fields are by default public.
 - They can have methods, just like in C#.
 - Note: in C# ~struct~ is a value type and ~class~ a reference type. In C++ both
-  are *value types*. We will get to C++ references later.
+  are *value types*. This means values are copied whenever you pass them around.
+  We will get to C++ references later.
  
 #+BEGIN_SRC c++
 struct vector {
@@ -105,17 +107,139 @@ struct vector {
     double y;
     double z;
 
-    double dot(vector other) const {
-        return x * other.x + y * other.y * z + other.z;
+    void normalize() {
+        double factor = std::sqrt(x*x + y*y + z*z);
+        x /= factor; y /= factor; z /= factor;
     }
-}; // THIS SEMICOLON IS MANDATORY. dont ask why.
+}; // This semicolon is mandatory. Don't ask why.
 
 vector v{1.0, 2.0, 3.0}, u{2.0, -6.0, 4.0};
-std::cout << v.dot(u) << '\n';
+v.normalize();
 #+END_SRC
 
-* Learning resources
-There are a lot of bad resources about C++ on the internet. Here are
-some good ones.
+* Constructors
+- Fields are initialized with ~: foo(bar), baz(qux)~.
+- Constructor body is run after fields are initialized. This can be used 
+  to validate or modify input. 
 
-- http://en.cppreference.com/w/
+#+BEGIN_SRC c++
+class normalized_vector {
+public:
+    normalized_vector(double x, double y, double z)
+        : inner{x, y, z} { 
+        inner.normalize();
+    }
+
+    vector get() const {
+        return inner;
+    }
+
+private:
+    vector inner;
+};
+#+END_SRC 
+
+* Resources in C#
+- In C#, memory is managed through a nondeterministic garbage collector.
+- In C#, other resources such as file handles must be cleaned up explicitly.
+
+#+BEGIN_SRC csharp
+var file = new FileHandle();
+// ... use file ...
+file.Dispose();
+#+END_SRC
+
+#+BEGIN_SRC csharp
+using (var file = new FileHandle()) {
+    // ... use file ...
+}
+#+END_SRC
+
+- In C++, resources are cleaned up both *implicitly* and *deterministically*!
+
+* Resources and destructors
+- A resource is anything that needs to be cleaned up after use.
+- Resources are modeled using classes with destructors.
+- No garbage collector necessary, yet resource cleanup is automatic.
+  
+#+BEGIN_SRC c++
+class file_handle {
+public:
+    file_handle(std::string path) 
+        : inner(std::fopen(path.c_str())) { }
+
+    file_handle(file_handle const&) = delete;
+    file_handle& operator=(file_handle const&) = delete;
+
+    ~file_handle() {
+        std::fclose(inner);
+    }
+
+private:
+    FILE* inner;
+};
+#+END_SRC
+
+- Note: you can use ~std::ifstream~ to read files. You don't need to
+  reimplement it yourself.
+
+* Resources and destructors
+- It is a common misconception that resource management is manual in C++.
+- Destructors are called automatically at the end of the scope. You don't 
+  need to close files, unlock mutexes, or release any sort of other resource
+  manually. 
+- No need for a construct such as ~using~ in C#.
+
+#+BEGIN_SRC c++
+vector read_vector() {
+    file_handle file("vectors.txt");
+    vector result;
+    // ... read file ...
+    return result;
+} // Destructor called automatically at end of scope.
+#+END_SRC
+* Resources and destructors
+- Memory is also a resource! And can be managed with the same mechanisms.
+- So not garbage collected by a garbage collector! But cleaned up by destructors.
+- Examples of resources classes that manage memory:
+  - ~std::string~
+  - ~std::vector~
+- A vector is a growable piece of memory (you can delete and add elements).
+- You don't need to explicitly free it after use. Its destructor is automatically called.
+
+* Resources and destructors
+- Destructors are automatically generated, and will invoke the destructors of all members.
+- This means that if you have a struct with file handles or vectors, they will be cleaned up
+  when the enclosing struct is cleaned up.
+- You only need to write destructors yourself if you use types that don't already have them!
+  
+#+BEGIN_SRC c++
+class display {
+public:
+    display() { ... }
+private:
+    std::string title;
+    vector<byte> screen_buffer;
+    std::unique_ptr<HWND, hwnd_delete> window;
+};
+#+END_SRC
+
+#+BEGIN_SRC c++
+{
+    display d;
+    draw_circle(d, 2.2, 4.3, 0.8);
+    wait_key_press();
+} // d.title, d.screen_buffer, and d.window automatically 
+  // cleaned up when d goes out of scope.
+#+END_SRC
+
+* Resource management
+- resource management a big deal in c++
+- It's one of its strongest features.  Automatic resource management without garbage collection
+- Many (C-)programmers don't realise it's a feature, and manage memory 'manually'
+
+- There are a lot of bad resources about C++ on the internet. Here are
+  some good ones.
+  - C++ language and library reference: https://en.cppreference.com/w/
+  - C++ books: https://tinyurl.com/so-cxxbooks
+  - c++-faq tag on Stack Overflow: https://stackoverflow.com/questions/tagged/c%2b%2b-faq
