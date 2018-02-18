@@ -1,0 +1,121 @@
+#+TITLE: C++ course
+#+AUTHOR: Arian van Putten
+
+* About C++
+- C++ is NOT C
+- C++ is NOT C#
+- Old
+- Much code is written in it
+- Gives you great power, but with great power comes great responsibility
+- There are many ways to skin a cat in C++ - some worse than others
+* Simple example
+#+BEGIN_SRC c++
+#include <algorithm>
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string line;                       // (1)
+    std::getline(std::cin, line);           // (2)
+    std::reverse(line.begin(), line.end()); // (3)
+    std::cout << line << '\n';              // (4)
+    return 0;
+}
+#+END_SRC
+
+1. Declare string variable to store line into.
+2. Read line from keyboard and store in variable.
+3. Reverse line in-place.
+4. Print reversed line.
+ 
+* C-style language
+We have all the things you would expect. Looks like C#.
+- Loops
+- If statements
+- Switch statement
+- Arrays
+- Functions
+- Classes
+
+* Types and variables
+Variables are declared and initialized using type and name. They can
+be assigned to with ~=~ just like in C#.
+
+#+BEGIN_SRC c++
+int age = 20;                   // whole number
+double x = 5.0, y = 2.0;        // two coordinates
+std::string name;               // empty string
+std::vector<double> numbers(5); // array of five zeroes
+std::map<std::string, double>   // dictionary
+    health;
+// Note: you don't need "new" to create arrays and maps.
+
+name = "Jacco";
+numbers[0] = 1.0;
+health[name] = 133.3;
+#+END_SRC
+
+Note: ~std::string~ is a safer, faster, more modern alternative to ~char*~.
+
+* Lets program hangman
+Looks a lot like how you would do it in C#!
+
+#+BEGIN_SRC c++
+std::string word("Borrel");
+std::set<char> guesses;
+while (true) {
+    for (char c : word) 
+        std::cout << (guesses.count(c) ? c : '_');
+    std::cout << '\n';
+
+    bool done = true;
+    for (char c : word) done = done && guesses.count(c);
+    if (done) break;
+
+    char guess = ' ';
+    std::cin >> guess;
+    guesses.insert(guess);
+}
+#+END_SRC
+
+* Function definitions and calls
+Looks a lot like C#. For example:
+
+#+BEGIN_SRC c++
+int gcd(int a, int b) {
+    while (b != 0) {
+        int t = b;
+        b = a % b;
+        a = t;
+    }
+    return a;
+}
+#+END_SRC
+
+* Creating own data types
+- ~struct~ and ~class~ are used to define new data types.
+- They mean the same thing, except ~struct~ fields are by default public.
+- They can have methods, just like in C#.
+- Note: in C# ~struct~ is a value type and ~class~ a reference type. In C++ both
+  are *value types*. We will get to C++ references later.
+ 
+#+BEGIN_SRC c++
+struct vector {
+    double x;
+    double y;
+    double z;
+
+    double dot(vector other) const {
+        return x * other.x + y * other.y * z + other.z;
+    }
+}; // THIS SEMICOLON IS MANDATORY. dont ask why.
+
+vector v{1.0, 2.0, 3.0}, u{2.0, -6.0, 4.0};
+std::cout << v.dot(u) << '\n';
+#+END_SRC
+
+* Learning resources
+There are a lot of bad resources about C++ on the internet. Here are
+some good ones.
+
+- http://en.cppreference.com/w/
