@@ -47,7 +47,9 @@ int main() {
 - ~while (..) ...~ 
 - Foreach exists as well :  ~for (int x : ints) { ... }~
 * Conditionals
+- Basically the same as in C#.
 - ~if (blah) { ... } else { ... }~
+- ~switch(x) { ... }~
 
 * Types and variables
 - Variables are declared and initialized using type and name, 
