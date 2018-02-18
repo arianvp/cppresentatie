@@ -196,6 +196,25 @@ int get_interest_rate() {
 -  We put the list of functions in a ~.h~ or ~.hpp~ file and use the ~#include~ directive
 -  ~#include~ simply copies the content of the ~.hpp~ file and literally pastes it into your ~.cpp~ file
 - Now we only have to declare what functions exist once, and then not worry about definition order... 
+
+* Headers and classes
+- Usually we put a class definition in a header (what fields and methods exist)
+- And then put hte implementation of the methods in a ~cpp~ file
+#+BEGIN_SRC cpp
+// person.h
+class person {
+   std::string name;
+public:
+   std::string get_name(); // Note, no body
+};
+#+END_SRC
+#+BEGIN_SRC cpp
+// person.cpp
+std::string person::get_name() {
+  return name + "!";
+}
+#+END_SRC
+
 * Resources in C#
 - In C#, memory is managed through a nondeterministic garbage collector.
 - In C#, other resources such as file handles must be cleaned up explicitly.
