@@ -1,15 +1,17 @@
 #+TITLE: C++ course
 #+AUTHOR: Arian van Putten
-
-* About C++
-- C++ is NOT C
-- C++ is NOT C#
-- Old
-- Much code is written in it
-- Gives you great power, but with great power comes great responsibility
-- There are many ways to skin a cat in C++ - some worse than others
+* Today
+-  We're gonna work on the practicals.
+* In the beginning there was C...
+- And Bjarne Stroustrup didn't like it
+- So he bolted features on top of it...
+- Made it incompatible with C
+- And called it C++
+- LOOOONG Time ago (1989 ish)
+- Underwent significant changes recently (2011)
+- Now it's much easier to use
 * Simple example
-#+BEGIN_SRC c++
+#+BEGIN_SRC cpp
 #include <algorithm>
 #include <iostream>
 #include <string>
@@ -22,12 +24,10 @@ int main() {
     return 0;
 }
 #+END_SRC
-
 1. Declare string variable to store line into.
 2. Read line from keyboard and store in variable.
 3. Reverse line in-place.
 4. Print reversed line.
- 
 * C-style language
 - We have all the things you would expect. Looks like C#.
 - Loops
@@ -36,31 +36,33 @@ int main() {
 - Arrays
 - Functions
 - Classes
-
 * Types and variables
-- Variables are declared and initialized using type and name. They can
-  be assigned to with ~=~ just like in C#.
+- Variables are declared and initialized using type and name, 
+  and an optional list of constructor arguments.
+- Variables can be assigned to with ~=~ just like in C#.
+#+BEGIN_SRC cpp
+int age = 20;            // whole number
+double x = 5.0, y = 2.0; // two coordinates
 
-#+BEGIN_SRC c++
-int age = 20;                   // whole number
-double x = 5.0, y = 2.0;        // two coordinates
-std::string name;               // empty string
-std::vector<double> numbers(5); // array of five zeroes
-std::map<std::string, double>   // dictionary
-    health;
+x = y;
+#+END_SRC
+* Types and variables
+- More complex types exist, such as strings and arrays.
+#+BEGIN_SRC cpp
+std::string name;                     // empty string
+std::vector<double> numbers(5);       // array of five zeroes
+std::map<std::string, double> health; // dictionary
 // Note: you don't need "new" to create arrays and maps.
+// You just declare them and they are there, ready to use.
 
 name = "Jacco";
 numbers[0] = 1.0;
 health[name] = 133.3;
 #+END_SRC
-
 - Note: ~std::string~ is a safer, more modern alternative to ~char*~.
-
-* Lets program hangman
+* Lets program Hangman
 - Looks a lot like how you would do it in C#!
-
-#+BEGIN_SRC c++
+#+BEGIN_SRC cpp
 std::string word("Borrel");
 std::set<char> guesses;
 while (true) {
@@ -77,12 +79,10 @@ while (true) {
     guesses.insert(guess);
 }
 #+END_SRC
-
 * Function definitions and calls
 - Function definitions are much like in C#.
 - Function call syntax is also the same.
-
-#+BEGIN_SRC c++
+#+BEGIN_SRC cpp
 int gcd(int a, int b) {
     while (b != 0) {
         int t = b;
@@ -92,7 +92,6 @@ int gcd(int a, int b) {
     return a;
 }
 #+END_SRC
-
 * Creating own data types
 - ~struct~ and ~class~ are used to define new data types.
 - They mean the same thing, except ~struct~ fields are by default public.
@@ -100,29 +99,22 @@ int gcd(int a, int b) {
 - Note: in C# ~struct~ is a value type and ~class~ a reference type. In C++ both
   are *value types*. This means values are copied whenever you pass them around.
   We will get to C++ references later.
- 
-#+BEGIN_SRC c++
+#+BEGIN_SRC cpp
 struct vector {
-    double x;
-    double y;
-    double z;
-
+    double x, y, z;
     void normalize() {
         double factor = std::sqrt(x*x + y*y + z*z);
         x /= factor; y /= factor; z /= factor;
     }
 }; // This semicolon is mandatory. Don't ask why.
-
 vector v{1.0, 2.0, 3.0}, u{2.0, -6.0, 4.0};
 v.normalize();
 #+END_SRC
-
 * Constructors
 - Fields are initialized with ~: foo(bar), baz(qux)~.
 - Constructor body is run after fields are initialized. This can be used 
   to validate or modify input. 
-
-#+BEGIN_SRC c++
+#+BEGIN_SRC cpp
 class normalized_vector {
 public:
     normalized_vector(double x, double y, double z)
@@ -138,51 +130,47 @@ private:
     vector inner;
 };
 #+END_SRC 
-
+* Constructors
+#+BEGIN_SRC cpp
+normalized_vector light_direction(3.0, 2.0, 1.3);
+vector inner = light_direction.get();
+#+END_SRC 
+- Bit different than C#
+- No ~new~ keyword used.  ~new~ keyword does exist, but is not commonly used in Modern C++
 * Resources in C#
 - In C#, memory is managed through a nondeterministic garbage collector.
 - In C#, other resources such as file handles must be cleaned up explicitly.
-
 #+BEGIN_SRC csharp
 var file = new FileHandle();
 // ... use file ...
 file.Dispose();
 #+END_SRC
-
 #+BEGIN_SRC csharp
 using (var file = new FileHandle()) {
     // ... use file ...
 }
 #+END_SRC
-
 - In C++, resources are cleaned up both *implicitly* and *deterministically*!
-
 * Resources and destructors
 - A resource is anything that needs to be cleaned up after use.
 - Resources are modeled using classes with destructors.
 - No garbage collector necessary, yet resource cleanup is automatic.
-  
-#+BEGIN_SRC c++
+#+BEGIN_SRC cpp
 class file_handle {
 public:
     file_handle(std::string path) 
         : inner(std::fopen(path.c_str())) { }
-
     file_handle(file_handle const&) = delete;
     file_handle& operator=(file_handle const&) = delete;
-
     ~file_handle() {
         std::fclose(inner);
     }
-
 private:
     FILE* inner;
 };
 #+END_SRC
-
 - Note: you can use ~std::ifstream~ to read files. You don't need to
   reimplement it yourself.
-
 * Resources and destructors
 - It is a common misconception that resource management is manual in C++.
 - Destructors are called automatically at the end of the scope. You don't 
@@ -190,7 +178,7 @@ private:
   manually. 
 - No need for a construct such as ~using~ in C#.
 
-#+BEGIN_SRC c++
+#+BEGIN_SRC cpp
 vector read_vector() {
     file_handle file("vectors.txt");
     vector result;
@@ -198,33 +186,24 @@ vector read_vector() {
     return result;
 } // Destructor called automatically at end of scope.
 #+END_SRC
+
 * Resources and destructors
 - Memory is also a resource! And can be managed with the same mechanisms.
 - So not garbage collected by a garbage collector! But cleaned up by destructors.
-- Examples of resources classes that manage memory:
-  - ~std::string~
-  - ~std::vector~
+- Examples of resources classes that manage memory are ~std::string~ and ~std::vector~.
 - A vector is a growable piece of memory (you can delete and add elements).
 - You don't need to explicitly free it after use. Its destructor is automatically called.
-
 * Resources and destructors
 - Destructors are automatically generated, and will invoke the destructors of all members.
 - This means that if you have a struct with file handles or vectors, they will be cleaned up
   when the enclosing struct is cleaned up.
 - You only need to write destructors yourself if you use types that don't already have them!
-  
-#+BEGIN_SRC c++
+#+BEGIN_SRC cpp
 class display {
-public:
-    display() { ... }
-private:
     std::string title;
     vector<byte> screen_buffer;
     std::unique_ptr<HWND, hwnd_delete> window;
 };
-#+END_SRC
-
-#+BEGIN_SRC c++
 {
     display d;
     draw_circle(d, 2.2, 4.3, 0.8);
@@ -232,12 +211,44 @@ private:
 } // d.title, d.screen_buffer, and d.window automatically 
   // cleaned up when d goes out of scope.
 #+END_SRC
+* Resource management
+- Resource management a big deal in C++.
+- It's one of its strongest features. Automatic resource management without garbage collection.
+- Many (C) programmers don't realise it's a feature, and manage memory 'manually'.
+* Resource management
+#+BEGIN_SRC c
+int main() {
+    char *buffer = malloc(4);
+    if (buffer == NULL) return -1;
+    buffer[0] = 'a'; buffer[1] = 'r'; buffer[2] = 'i'; buffer[3] = '\0';
+    char *old_buffer = buffer;
+    buffer = realloc(old_buffer, 6);
+    if (buffer == NULL) {free(old_buffer); return -1;}
+    buffer[3] = 'a';
+    buffer[4] = 'n';
+    buffer[5] = '\0';
+    puts(buffer);
+    free(buffer);
+}
+#+END_SRC
+- Memory management in C. (It's a fucking nightmare)
 
 * Resource management
-- resource management a big deal in c++
-- It's one of its strongest features.  Automatic resource management without garbage collection
-- Many (C-)programmers don't realise it's a feature, and manage memory 'manually'
+#+BEGIN_SRC cpp
+int main() {
+    std::string buffer("ari");
+    buffer.push_back('a');
+    buffer.push_back('n');
+    std::cout << buffer << '\n';
+}
+#+END_SRC
+- Note: No explicit free().
+- No explicit reallocation.
+- don't have to deal with setting last byte to ~\0~
+- Exceptions are used for error handling, not returning ~NULL~
+- Exceptions cause Destructor to be run.
 
+* Learning sources
 - There are a lot of bad resources about C++ on the internet. Here are
   some good ones.
   - C++ language and library reference: https://en.cppreference.com/w/
