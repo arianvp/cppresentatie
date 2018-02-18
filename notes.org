@@ -1,7 +1,12 @@
 #+TITLE: C++ course
 #+AUTHOR: Arian van Putten
 * Today
--  We're gonna work on the practicals.
+- We're gonna work on the practicals. Lets see how far we get
+- Explore basic syntax, get familiar to how it's similar to C#
+- I will give a short intro to C++ syntax to get you started
+- I will tell about Resource management in C++
+- Resource management is what makes C++ unique compared to C
+- Was not part of the course last year ... But is important to understand.
 * In the beginning there was C...
 - And Bjarne Stroustrup didn't like it
 - So he bolted features on top of it...
