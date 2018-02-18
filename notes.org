@@ -81,7 +81,7 @@ health[name] = 133.3;
 std::array<int, 8> eight_ints;  // fixed size array on stack
 // in C# that would be  int[] x = new int[8];  though note it's on heap
 int eight_ints[8]; // way to create fixed size arrays on stack
-std::vector eight_ints(8); // resizable array
+std::vector<int> eight_ints(8); // resizable array
 
 #+END_SRC cpp
 * Lets program Hangman
